@@ -9,7 +9,7 @@ using TicketingSystem.Data;
 
 namespace TicketingSystem.Migrations
 {
-    [DbContext(typeof(TicketContext))]
+    [DbContext(typeof(ApplicationDbContext))]
     [Migration("20210425204403_build1")]
     partial class build1
     {

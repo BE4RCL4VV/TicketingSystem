@@ -1,29 +1,29 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using TicketingSystem.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using TicketingSystem.Models;
 
-namespace TicketingSystem.Models
+namespace TicketingSystem.Data
 {
     public static class SeedData
     {
         public static void Initialize(IServiceProvider serviceProvider)
         {
-            using (var context = new TicketContext(serviceProvider.GetRequiredService<DbContextOptions<TicketContext>>()))
+            using (var context = new ApplicationDbContext(serviceProvider.GetRequiredService<DbContextOptions<ApplicationDbContext>>()))
             {
-                if (context.Tickets.Any())
+                if (context.Ticket.Any())
                 {
                     return;
                 }
-                context.Tickets.AddRange(
+                context.Ticket.AddRange(
                     new TicketClass
                     {
                         DateOpened = DateTime.Now,
                         DateClosed = DateTime.Now,
                         Description = "Intial Seed",
-                        Resolution = 1
+                        Resolution = 1,
                     }
                     );
                 context.SaveChanges();

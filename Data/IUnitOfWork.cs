@@ -7,7 +7,7 @@ namespace TicketingSystem.Data
 {
     public interface IUnitOfWork
     {
-        ITicketRepository Tickets { get; }
+        ITicketRepository Ticket { get; }
         int Complete();
     }
 }

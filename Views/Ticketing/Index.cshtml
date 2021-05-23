@@ -4,25 +4,29 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
+<h1>Current Tickets</h1>
 
 <p>
     <a asp-action="Create">Create New</a>
+    <a href="C:\Users\parte\source\repos\TicketingSystem\Data\Repository.cs">C:\Users\parte\source\repos\TicketingSystem\Data\Repository.cs</a>
 </p>
 <table class="table">
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.DateOpened)
+                @*@Html.DisplayNameFor(model => model.DateOpened)*@<p>Date Opened</p>
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.DateClosed)
+                @*@Html.DisplayNameFor(model => model.DateClosed)*@<p>Date Closed</p>
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Description)
+                @*@Html.DisplayNameFor(model => model.Description)*@<p>Description</p>
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Resolution)
+                @*@Html.DisplayNameFor(model => model.Resolution)*@<p>Resolution</p>
+            </th>
+            <th>
+                @*Html.DisplayNameFor(model => model.UserId)*@<p>User Id</p>
             </th>
             <th></th>
         </tr>
@@ -43,9 +47,9 @@
                 @Html.DisplayFor(modelItem => item.Resolution)
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                <a asp-action="Edit" asp-route-id="@item.TicketId">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.TicketId">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.TicketId">Delete</a>
             </td>
         </tr>
 }

@@ -1,20 +1,18 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace TicketingSystem.Data
 {
-
     public class UnitOfWork : IUnitOfWork
     {
-        private readonly TicketContext _context;
-        public ITicketRepository Tickets { get; private set; }
-        public UnitOfWork(TicketContext context)
+        private readonly ApplicationDbContext _context;
+        public ITicketRepository Ticket { get; private set; }
+        public UnitOfWork(ApplicationDbContext context)
         {
             _context = context;
-            Tickets = new EFTicketRepository(_context);
+            Ticket = new EFTicketRepository(_context);
         }
         public int Complete()
         {

@@ -7,26 +7,32 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using TicketingSystem.Data;
 using TicketingSystem.Models;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authorization;
 
 namespace TicketingSystem.Controllers
 {
     public class TicketingController : Controller
     {
-        private readonly TicketContext _context;
-        private IUnitOfWork _unitOfWork;
+        private readonly ApplicationDbContext _context;
+        private readonly IUnitOfWork _unitOfWork;
+        private readonly UserManager<IdentityUser> _userManager;
+        private IAuthorizationService _authService;
         private ITicketRepository _repo;
 
-        public TicketingController(TicketContext context, ITicketRepository repo, IUnitOfWork unitOfWork)
+        public TicketingController(ApplicationDbContext context, UserManager<IdentityUser> usr, ITicketRepository repo, IUnitOfWork unitOfWork, IAuthorizationService auth)
         {
             _context = context;
             _repo = repo;
             _unitOfWork = unitOfWork;
+            _userManager = usr;
+            _authService = auth;
         }
 
         // GET: Ticketing
         public IActionResult Index()
         {
-            return View(_repo.GetAll());
+            return View(_repo.GetAllByUser(_userManager.GetUserId(User)));
         }
 
         // GET: Ticketing/Details/5
@@ -48,9 +54,17 @@ namespace TicketingSystem.Controllers
         }
 
         // GET: Ticketing/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            return View();
+            var user = await _userManager.GetUserAsync(User);
+            TicketClass ticket = new TicketClass();
+            ticket.User = user;
+            ticket.UserId = user.Id;
+            ticket.DateOpened = DateTime.Now;
+
+            TempData["userid"] = user.Id;
+
+            return View(ticket);
         }
 
         // POST: Ticketing/Create
@@ -90,16 +104,16 @@ namespace TicketingSystem.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(int id, [Bind("Id,DateOpened,DateClosed,Description,Resolution")] TicketClass ticketClass)
+        public IActionResult Edit(int id, [Bind("TicketId,DateOpened,DateClosed,Description,Resolution,UserId")] TicketClass ticketClass)
         {
-            if (id != ticketClass.Id)
+            if (id != ticketClass.TicketId)
             {
                 return NotFound();
             }
 
             if (ModelState.IsValid)
             {
-                var UpdatedTicket = _repo.Get(ticketClass.Id);
+                var UpdatedTicket = _repo.Get(ticketClass.TicketId);
 
                 UpdatedTicket.DateClosed = ticketClass.DateClosed;
                 UpdatedTicket.DateOpened = ticketClass.DateOpened;
@@ -142,7 +156,8 @@ namespace TicketingSystem.Controllers
 
         private bool TicketClassExists(int id)
         {
-            return _context.Tickets.Any(e => e.Id == id);
+            return _repo.Get(id) == null;
+            //return _context.Tickets.Any(e => e.TicketId == id);
         }
     }
 }
